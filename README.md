@@ -1,4 +1,4 @@
-# TiddlyWiki App Engine Server
+# TiddlyWiki Server
 
 Note: Original written by Russ Cox, I simply edited it to save to local
 filesystem.
