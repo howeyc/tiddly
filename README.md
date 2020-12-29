@@ -1,49 +1,32 @@
 # TiddlyWiki App Engine Server
 
-This is a minimal Google App Engine app, written in Go, that can serve
+Note: Original written by Russ Cox, I simply edited it to save to local
+filesystem.
+
+This is a app, written in Go, that can serve
 as the back end for a personal [TiddlyWiki](http://tiddlywiki.com/)
 
 The [TiddlyWiki5](https://github.com/Jermolene/TiddlyWiki5) implementation
 has a number of back end options. This app implements the backend expected
 by the “[TiddlyWeb](http://tiddlyweb.com/) and TiddlySpace components” plugin.
 
-The usual way to deploy TiddlyWeb is to run a fairly complex Python web server
-program. I'd rather not. Instead I implemented a minimal Go server that responds
-appropriately to the (relatively few) needed JSON API calls.
-
 ## Authentication
 
-The TiddlyWeb JSON API envisions a multiuser system in which different users have
-access to different sets of tiddlers. This Go server contains none of that:
-it assumes that all users have full access to everything, although it does record
-who created which tiddlers. The only access control is that the app.yaml here
-requires HTTPS and administrator login for all URLs, and as a “belt and suspenders” measure,
-the app itself also refuses to serve to non-admins, as checked by user.IsAdmin.
-
-See the "Re Authentication" comment in tiddly.go for information about
-making the server publicly read-only (it's not quite perfect).
+No Authentication, it assumes that all users have full access to everything
 
 ## Data model
 
-The app stores the current tiddlers in Cloud Datastore as Tiddler entities.
-It also stores every version of every tiddler as TiddlerHistory entities.
-Currently nothing reads the TiddlerHistory, but in case of a mistake that
-wipes out important Tiddler contents it should be possible to reconstruct
-lost data from the TiddlerHistory.
-
-The TiddlyWiki downloaded as index.html that runs in the browser
-downloads (through the JSON API) a master list of all tiddlers and their
-metadata when the page first loads and then lazily fetches individual 
-tiddler content on demand.
+Every "thing" gets stored as a file on the disk where you run this program.
 
 ## Deployment
 
-Create an Google App Engine standard app and deploy with
+Put this program where you want all the files to be saved, and run with
 
-	appcfg.py -A your-app -V your-version update .
+	./tiddly -localhost -port 8080
 
-Then visit https://your-app.appspot.com/. As noted above, only admins
-will have access to the content.
+Then visit http://localhost:8080/.
+
+If you deploy without -localhost, anyone with access to the url can do anything.
 
 ## Plugins
 
